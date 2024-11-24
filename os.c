@@ -1,4 +1,3 @@
-
 //ld
 #include<stdio.h>
 #include<dirent.h>
@@ -53,74 +52,59 @@ exit(0);
 }
 
 
+// fcfs
 
 
-//fcfs
-#include <stdio.h>
-int main()
-{
-    int pid[15];
-    int bt[15];
-    int n;
-    printf("Enter the number of processes: ");
-    scanf("%d",&n);
- 
-    printf("Enter process id of all the processes: ");
-    for(int i=0;i<n;i++)
-    {
-        scanf("%d",&pid[i]);
-    }
- 
-    printf("Enter burst time of all the processes: ");
-    for(int i=0;i<n;i++)
-    {
-        scanf("%d",&bt[i]);
-    }
- 
-    int i, wt[n];
-    wt[0]=0;
- 
-    //for calculating waiting time of each process
-    for(i=1; i<n; i++)
-    {
-        wt[i]= bt[i-1]+ wt[i-1];
-    }
- 
-    printf("Process ID     Burst Time     Waiting Time     TurnAround Time\n");
-    float twt=0.0;
-    float tat= 0.0;
-    for(i=0; i<n; i++)
-    {
-        printf("%d\t\t", pid[i]);
-        printf("%d\t\t", bt[i]);
-        printf("%d\t\t", wt[i]);
- 
-        //calculating and printing turnaround time of each process
-        printf("%d\t\t", bt[i]+wt[i]);
-        printf("\n");
- 
-        //for calculating total waiting time
-        twt += wt[i];
- 
-        //for calculating total turnaround time
-        tat += (wt[i]+bt[i]);
-    }
-    float att,awt;
- 
-    //for calculating average waiting time
-    awt = twt/n;
- 
-    //for calculating average turnaround time
-    att = tat/n;
-    printf("Avg. waiting time= %f\n",awt);
-    printf("Avg. turnaround time= %f",att);
+#include<stdio.h>
+int main(){
+
+int n;
+printf("Enter the number of process:");
+scanf("%d",&n);
+
+int pid[15];
+printf("Enter the process id:");
+for(int i=0;i<n;i++){
+    scanf("%d",&pid[i]);
 }
 
+int bt[15];
+printf("Enter the burst time:");
+for(int i=0;i<n;i++){
+    scanf("%d",&bt[i]);
+}
 
+int wt[n];
+wt[0]=0;
 
+for(int i=1;i<n;i++){
+    wt[i]=wt[i-1]+bt[i-1];
+}
 
+printf("\nProcess id\t  busrt time\t  waiting time\t  turn around time\n");
+float twt=0.0;
+float tat=0.0;
+for(int i=0;i<n;i++){
+    printf("%d\t\t",pid[i]);
+    printf("%d\t\t",bt[i]);
+    printf("%d\t\t",wt[i]);
+    printf("%d\t\t",wt[i]+bt[i]);
 
-//srt
+    twt+=wt[i];
+    tat+=bt[i]+wt[i];
+}
+
+float awt=twt/n;
+float att=tat/n;
+
+printf("\ntotal average waiting time=%f\n",awt);
+printf("\ntotal average waiting time=%f\n",att);
+
+}
+
+// srt
+
+#include<stdio.h>
 
 int main() 
 {
@@ -161,82 +145,7 @@ int main()
     return 0;
 }
 
-
-
-
-
-
-//producer consumer
-
-#include<stdio.h>
-#include<stdlib.h>
-int mutex=1,empty=3,full=0,x=0;
-int main()
-{
-    int n;
-    void producer();
-    void consumer();
-int wait(int);
-int signal(int);
-printf(“n1.producer 2:Consumer 3.Exit\n”);
-while(1)
-{
-printf(\nEnter your choice:);
-scanf(“%d”,&n);
-switch(n)
-{
-case 1:if((mutex==1)&&(empty!=0))
-    producer();
-    else
-    printf(“Buffer is full\n”);
-    break;
-case 2:if((mutex==1)&&(full!=0))
-    consumer();
-    else
-    printf(“Buffer is empty\n”);
-    break;
-case 3:exit(0);
-    break;
-}
-}
-return 0;
-}
-int wait(int s)
-{
-return(--s);
-}
-int signal(int s)
-{
-return(++s);
-}
-
-void producer()
-{
-mutex=wait(mutex);
-full=signal(full);
-empty=wait(empty);
-x++;
-printf(“\nproducer produces the item %d”, x);
-if(x==3)
-{
-printf(“\n Items in buffer are :%d%d%d”,x-2,x-1,x);
-}
-mutex=signal(mutex);
-}
-void consumer()
-{
-mutex=wait(mutex);
-full=wait(full);
-empty=signal(empty);
-printf(“\nConsumer consumes item %d”,x);
-x--;
-mutex=signal(mutex);
-printf(“\nRemaining items in the buffer is:%d%d”,x-1,x);
-}
-
-
-
-//dining philospher
+// dining philosopher
 
 
 #include<stdio.h>
@@ -291,15 +200,8 @@ void eat(int phil)
 	printf("\nPhilosopher %d is eating",phil);
 }
 
+// bankers algo
 
-
-
-
-
-
-
-
-//bankers algo
 #include<stdio.h>  
 int main()  
 {  
@@ -368,13 +270,7 @@ int main()
 }  
 
 
-
-
-
-
-
-//memory allocation
-
+// memory allocation
 
 #include<stdio.h>
  
@@ -423,14 +319,212 @@ for(i=1;i<=np && parray[i]!=0;i++)
 printf("\n%d\t\t%d\t\t%d\t\t%d\t\t%d",i,p[i],parray[i],b[parray[i]],fragment[i]);
 }
 
+// producer consumer
+
+#include<stdio.h>
+
+int mutex=1,empty=3,full=0,x=0;
+
+int wait(int s){
+    return --s;
+}
+
+int signal(int s){
+    return ++s;
+}
+
+void producer(){
+
+mutex=wait(mutex);
+empty=wait(empty);
+full=signal(full);
+x++;
+
+printf("Producer produces an item=%d\n",x);
+
+if(x==3){
+    printf("items in buffer are:%d %d %d",x-2,x-1,x);
+}
+
+mutex=signal(mutex);
+}
 
 
+void consumer(){
+
+mutex=wait(mutex);
+empty=signal(empty);
+full=wait(full);
+x--;
+
+printf("items remianing in the buffer is %d,%d\n",x-1,x);
+
+mutex=signal(mutex);
+}
+
+int main(){
+    int n;
+    printf("1. Producer  2. Consumer  3. Exit\n");
+    while (1)
+    {
+        printf("\nEnter your choice: ");
+        scanf("%d", &n);
+
+        switch (n)
+        {
+        case 1:
+            if ((mutex == 1) && (empty != 0))
+                producer();
+            else
+                printf("Buffer is full\n");
+            break;
+        case 2:
+            if ((mutex == 1) && (full != 0))
+                consumer();
+            else
+                printf("Buffer is empty\n");
+            break;
+        case 3:
+            exit(0);
+            break;
+        }
+    }
+    return 0;
+}
 
 
+// scan disk
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+
+int choice, track, no_req, head, distance;
+int disc_req[100];
+
+void menu() {
+    printf("\n\n*MENU*");
+    printf("\n1. Input data\n  2. SCAN \n 3. Exit");
+    printf("\n\n Enter your choice: ");
+    scanf("%d", &choice);
+}
+
+void input() {
+    printf("Enter Total number of tracks: ");
+    scanf("%d", &track);
+    printf("Enter total number of disc requests: ");
+    scanf("%d", &no_req);
+
+    if (no_req == 0) {
+        printf("No requests to process.\n");
+        return;
+    }
+
+    printf("\nEnter disc requests in FCFS order: ");
+    for(int i = 0; i < no_req; i++) {
+        scanf("%d", &disc_req[i]);
+    }
+
+    printf("\nEnter current head position: ");
+    scanf("%d", &head);
+}
+
+void sort() {
+    int temp;
+    for(int i = 0; i < no_req - 1; i++) {
+        for(int j = i + 1; j < no_req; j++) {
+            if(disc_req[i] > disc_req[j]) {
+                temp = disc_req[i];
+                disc_req[i] = disc_req[j];
+                disc_req[j] = temp;
+            }
+        }
+    }
+}
+
+void scan() {
+    int dir, i, index;
+
+    distance = 0;
+    printf("\nEnter the direction of head \n1 - Towards higher disc (Right) \n0 - Towards lower disc (Left): ");
+    scanf("%d", &dir);
+
+    sort();
+    printf("\nSorted Disc requests are: ");
+    for(i = 0; i < no_req; i++) {
+        printf("%d ", disc_req[i]);
+    }
+
+    for(i = 0; i < no_req; i++) {
+        if(disc_req[i] > head) {
+            index = i;
+            break;
+        }
+    }
+
+    printf("\nCurrent head position: %d\n", head);
+    printf("%d => ", head);
+
+    if (dir == 1) {
+        for(i = index; i < no_req; i++) {
+            printf("%d => ", disc_req[i]);
+            distance += abs(head - disc_req[i]);
+            head = disc_req[i];
+        }
+        distance += abs(head - (track - 1));
+        head = track - 1;
+        printf("%d => ", head);
+
+        for(i = index - 1; i >= 0; i--) {
+            printf("%d => ", disc_req[i]);
+            distance += abs(head - disc_req[i]);
+            head = disc_req[i];
+        }
+    } else {
+        for(i = index - 1; i >= 0; i--) {
+            printf("%d => ", disc_req[i]);
+            distance += abs(head - disc_req[i]);
+            head = disc_req[i];
+        }
+        distance += abs(head - 0);
+        head = 0;
+        printf("0 => ");
+
+        for(i = index; i < no_req; i++) {
+            printf("%d => ", disc_req[i]);
+            distance += abs(head - disc_req[i]);
+            head = disc_req[i];
+        }
+    }
+
+    printf("End\n");
+    printf("Total Distance Traversed: %d\n", distance);
+}
+
+int main() {
+    while(1) {
+        menu();
+        switch(choice) {
+        case 1: 
+            input();
+            break;
+        case 2: 
+            scan();
+            break;
+        case 3: 
+            exit(0);       
+            break;
+        default:
+            printf("\nEnter a valid choice.\n");
+            break;
+        }
+    }
+
+    return 0;
+}
 
 
-
-//flie allocation
+// file allocation
 
 #include <stdio.h>
 #include <conio.h>
@@ -478,151 +572,3 @@ recurse(files);
 getch();
 return 0;
 }
-
-
-
-
-
-
-
-//sacn disk
-
-#include<stdio.h>
-#include<stdlib.h>
-#include<math.h>
-int choice,track,no_req,head,head1,distance;
-int disc_req[100],finish[100];
-void menu()
-{
-    printf("\n\n********MENU********");
-    printf("\n1. Input data\n  2. SCAN \n 3. Exit");
-    printf("\n\n Enter your choice");
-    scanf("%d",&choice);
-}
-void input()
-{
-    int i;
-    printf("Enter Total number of tracks");
-    scanf("%d",&track);
-    printf("Enter total number of disc requests");
-    scanf("%d",&no_req);
-    printf("\n Enter disc requests in FCFS order");
-    for(i=0;i<no_req;i++)
-    {
-        scanf("%d",&disc_req[i]);
-        
-    }
-    printf("\n Enter current head position");
-    scanf("%d",&head1);
-
-}
-
-void sort()
-{
-    int i,j,temp;
-    for(i=0;i<no_req;i++)
-    {
-        for(j=0;j<no_req;j++)
-        {
-            if(disc_req[i]<disc_req[j])
-            {
-                temp=disc_req[i];
-                disc_req[i]=disc_req[j];
-                disc_req[j]=temp;
-            }
-        }
-    }
-}
-void scan()
-{
-    int index,dir;
-    int i;
-    distance=0;
-    head=head1;
-    printf("\n Enter the direction of head \n 1 - Towars higher disc(Right) \n 0 -towards lower disc(left)");
-    scanf("%d",&dir);
-    sort();
-    printf("\n Sorted Disc requests are: ");
-    for(i=0;i<no_req;i++)
-    {
-        
-        printf("  %d",disc_req[i]);
-    }
-    
-    i=0;
-    while(head>=disc_req[i])
-    {
-        index=i;
-        i++;
-    }
-    printf("\n index=%d",index);
-    printf("\n%d=>",head);
-    if(dir==1)
-    {
-        sort();
-        for(i=index+1;i<no_req;i++)
-        {
-            printf("%d=>",disc_req[i]);
-            distance+=abs(head-disc_req[i]);
-            head=disc_req[i];          
-        }
-        distance+=abs(head-(track-1));
-        printf("%d=>",track-1);
-        head=track-1;
-        for(i=index;i>=0;i--)
-        {
-            printf("%d=>",disc_req[i]);
-            distance+=abs(head-disc_req[i]);
-            head=disc_req[i];          
-        }
-    }
-    else
-    {
-        sort();
-        for(i=index;i>=0;i--)
-        {
-            printf("%d=>",disc_req[i]);
-            distance+=abs(head-disc_req[i]);
-            head=disc_req[i];          
-        }
-        distance+=abs(head-0);
-        head=0;
-        printf("0=>");
-        for(i=index+1;i<no_req;i++)
-        {
-            printf("%d=>",disc_req[i]);
-            distance+=abs(head-disc_req[i]);
-            head=disc_req[i];          
-        }
-        
-    }
-    printf("End");
-    printf("\n Total Distance Traversed=%d",distance);
-    
-
-
-}
-
-int main()
-{
-    while(1)
-    {
-        menu();
-        switch(choice)
-        {
-        case 1: input();
-            break;
-        case 2: scan();
-            break;
-        case 3: exit(0);       
-            break;
-        default:
-            printf("\n Enter valid choice");
-            break;
-        }
-    }
-
-    return 0;
-}
-
-
